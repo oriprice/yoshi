@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`something should 1`] = `"Wix Full Stack Project Boilerplate"`;

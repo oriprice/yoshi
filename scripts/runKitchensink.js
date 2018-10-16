@@ -35,7 +35,7 @@ projects.forEach(projectDir => {
   execa.shellSync('npm run test', { cwd: tempDir, stdio: 'inherit' });
 
   const serve = execa.shell(`npx serve --listen=3200`, {
-    cwd: tempDir,
+    cwd: path.join(tempDir, 'dist/statics'),
     stdio: 'inherit',
   });
 

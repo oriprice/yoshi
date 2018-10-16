@@ -1,4 +1,4 @@
 module.exports = {
-  testEnvironment: 'node',
+  preset: 'jest-puppeteer',
   testMatch: ['**/integration/*.test.js'],
 };
