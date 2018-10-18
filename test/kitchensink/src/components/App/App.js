@@ -21,6 +21,16 @@ class App extends Component {
           this.setState({ feature: f.default }),
         );
         break;
+      case 'scss-inclusion':
+        import('../ScssInclusion/ScssInclusion').then(f =>
+          this.setState({ feature: f.default }),
+        );
+        break;
+      case 'global-scss-inclusion':
+        import('../GlobalScssInclusion/GlobalScssInclusion').then(f =>
+          this.setState({ feature: f.default }),
+        );
+        break;
       case 'json-inclusion':
         import('../JsonInclusion/JsonInclusion').then(f =>
           this.setState({ feature: f.default }),

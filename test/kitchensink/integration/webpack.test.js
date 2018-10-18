@@ -60,6 +60,26 @@ describe('Integration', () => {
       ]);
     });
 
+    it('scss inclusion', async () => {
+      await initTest('scss-inclusion');
+
+      const className = await page.$eval('#feature-scss-inclusion', elm =>
+        elm.getAttribute('class'),
+      );
+
+      await matchCSS(page, [
+        new RegExp(`.${className}{background:.+;color:.+}`),
+      ]);
+    });
+
+    it('global scss inclusion', async () => {
+      await initTest('global-scss-inclusion');
+
+      await matchCSS(page, [
+        /\.globalScssModulesInclusion\{background:.+;color:.+}/,
+      ]);
+    });
+
     it('json inclusion', async () => {
       await initTest('json-inclusion');
 
