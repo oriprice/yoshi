@@ -52,6 +52,7 @@
     "preset": "jest-yoshi-preset"
   },
   "yoshi": {
+    "experimentalServerBundle": true,
     "externals": {
       "react": "React",
       "react-dom": "ReactDOM"
@@ -62,11 +63,5 @@
     "presets": [
       "yoshi"
     ]
-  },
-  "eslintConfig": {
-    "extends": "yoshi",
-    "globals": {
-      "app": false
-    }
   }
 }
