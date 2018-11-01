@@ -17,8 +17,11 @@ Please **ask first** if somebody else is already working on this or the core dev
 
 That's it, you're good to go.
 
-* `npm test` - Run yoshi's tests.
-* `npm run E2E` - create all yoshi projects and install, build and test each one of them.
+* `npm run test-all` - Run all monorepo tests.
+* `npm run test-yoshi` - Run `yoshi` package tests.
+* `npm run test-create-yoshi-app` - Run `create-yoshi-app` package tests.
+* `npm run test-configs` - Run all packages tests besides `yoshi` & `create-yoshi-app`.
+* `npm run e2e` - create all yoshi projects and install, build and test each one of them.
 * `npm run build` - Run [eslint](https://eslint.org/) on all packages with the following [rules](https://github.com/wix/yoshi/blob/master/.eslintrc).
 * `npm run test:watch` Run the tests using watch mode.
 
@@ -86,7 +89,17 @@ npm link
 ```
 
 ### Adding a Template
-Create a directory in `packages/create-yoshi-app/templates/<template-name>` and another one for typescript `packages/create-yoshi-app/templates/<template-name>-typescript`. It will be tested automatically in the `E2E` suite.
+Create two directories:
+
+* `packages/create-yoshi-app/templates/<template-name>`
+
+* `packages/create-yoshi-app/templates/<template-name>-typescript`
+
+Specify them in the following file:
+
+* `packages/create-yoshi-app/src/projects.js`
+
+It will be added to the templates you can choose when running `create-yoshi-app` and will be tested automatically in the `e2e` suite.
 
 For details about the templating and more see [create-yoshi-app](./packages/create-yoshi-app/README.md)
 

@@ -1,11 +1,7 @@
 const getGitConfig = require('parse-git-config');
-const getProjectTypes = require('./getProjectTypes');
+const projects = require('./projects');
 
-module.exports = async () => {
-  const projectTypes = getProjectTypes().filter(
-    type => !type.endsWith('-typescript'),
-  );
-
+module.exports = () => {
   const gitConfig = getGitConfig.sync({ include: true, type: 'global' });
 
   const gitUser = gitConfig.user || {};
@@ -24,6 +20,8 @@ module.exports = async () => {
       name: 'authorEmail',
       message: 'Author @wix.com email',
       initial: gitEmail.endsWith('@wix.com') ? gitEmail : '',
+      validate: value =>
+        value.endsWith('@wix.com') ? true : 'Please enter a @wix.com email',
     },
     {
       type: 'text',
@@ -34,10 +32,12 @@ module.exports = async () => {
       type: 'select',
       name: 'projectType',
       message: 'Choose project type',
-      choices: projectTypes.map(projectType => ({
-        title: projectType,
-        value: projectType,
-      })),
+      choices: projects
+        .filter(type => !type.endsWith('-typescript'))
+        .map(projectType => ({
+          title: projectType,
+          value: projectType,
+        })),
     },
     {
       type: 'select',

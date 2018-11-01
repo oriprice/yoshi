@@ -799,7 +799,7 @@ describe('Aggregator: Test', () => {
           'src/style.scss': `.a {.b {color: red;}}`,
           'src/client.js': `require('./style.scss'); module.exports = function (a) {return a + 1;};`,
           'src/client.spec.js': `
-            const add1 = require('./client'); it('pass client', function () {expect(add1(1)).toBe(2);});
+            const fakeExternalModule = require('fake-external-module');  const add1 = require('./client'); it('pass client', function () {expect(add1(1)).toBe(2);});
               it('pass style from node_modules', function () {require('./foo.css');});
           `,
           'src/foo.css': '@import "bar/bar";',
@@ -809,6 +809,9 @@ describe('Aggregator: Test', () => {
           `,
           'package.json': fx.packageJson({
             separateCss: false,
+            externals: {
+              'fake-external-module': 'Array.prototype.map',
+            },
           }),
           'pom.xml': fx.pom(),
         })
@@ -850,6 +853,12 @@ describe('Aggregator: Test', () => {
             'setup karma',
           );
         });
+
+        it('should not bundle externals', () => {
+          expect(test.content('dist/specs.bundle.js')).to.contain(
+            'module.exports = Array.prototype.map;',
+          );
+        });
       });
     });
 
@@ -876,6 +885,9 @@ describe('Aggregator: Test', () => {
           .execute('test', ['--karma']);
 
         expect(res.code).to.equal(0);
+        expect(res.cat().match(/Starting browser PhantomJS/g)).to.have.length(
+          1,
+        );
         expect(test.content('dist/specs.bundle.js')).to.contain(
           'expect(1).toBe(1)',
         );

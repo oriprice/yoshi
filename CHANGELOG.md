@@ -1,5 +1,49 @@
 # Changelog
 
+## 3.17.0 (2018-10-29)
+
+#### :rocket: New Feature
+* `yoshi`
+  * [#683](https://github.com/wix/yoshi/pull/683) Print error messages and add verbose flag for full stacktrace ([@netanelgilad](https://github.com/netanelgilad))
+  * [#677](https://github.com/wix/yoshi/pull/677) Look for a `dev-server` entry if the standard server entry isn't found ([@ronami](https://github.com/ronami))
+
+#### :bug: Bug Fix
+* `jest-environment-yoshi-puppeteer`
+  * [#678](https://github.com/wix/yoshi/pull/678) Remove `headless: true` default from `puppeteer.launch` call ([@ronami](https://github.com/ronami))
+* `yoshi-config`
+  * [#682](https://github.com/wix/yoshi/pull/682) Fix async function type checking bug by using `ajv` instead of `jest-validate` to validate jest config ([@ronami](https://github.com/ronami))
+* `yoshi`
+  * [#679](https://github.com/wix/yoshi/pull/679) Handle `dep-check` errors on build ([@netanelgilad](https://github.com/netanelgilad))
+
+#### :memo: Documentation
+* [#680](https://github.com/wix/yoshi/pull/680) Move the docs for `babel-preset-yoshi` and `jest-yoshi-preset` to the docs website ([@ronami](https://github.com/ronami))
+
+## 3.16.3 (2018-10-25)
+
+#### :bug: Bug Fix
+* `jest-environment-yoshi-bootstrap`, `jest-yoshi-preset`
+  * [#669](https://github.com/wix/yoshi/pull/669) Run jest yoshi config inside Jest's vm so transforms/console are used correctly ([@ronami](https://github.com/ronami))
+
+## 3.16.1 (2018-10-24)
+
+#### :bug: Bug Fix
+* `yoshi`
+  * [#656](https://github.com/wix/yoshi/pull/656) Show long class names in Storybook ([@muteor](https://github.com/muteor))
+  * [#667](https://github.com/wix/yoshi/pull/667) Enable using a different test runner in Karma configuration ([@ranyitz](https://github.com/ranyitz))
+  * [#665](https://github.com/wix/yoshi/pull/665) Support `externals` configuration when using Karma (`specs.bundle`) ([@eddierl](https://github.com/eddierl))
+  * [#666](https://github.com/wix/yoshi/pull/666) Enable using different browsers in Karma configuration ([@eddierl](https://github.com/eddierl))
+
+#### :memo: Documentation
+* Other
+  * [#664](https://github.com/wix/yoshi/pull/664) Update contributing "Local Testing" section + arrange scripts alphabetically ([@ranyitz](https://github.com/ranyitz))
+  * [#655](https://github.com/wix/yoshi/pull/655) Add `svg2react-icon` tool to svg docs ([@bildja](https://github.com/bildja))
+* `jest-yoshi-preset`
+  * [#649](https://github.com/wix/yoshi/pull/649) Add `jest-yoshi` setup files documentation ([@saarkuriel](https://github.com/saarkuriel))
+
+#### :house: Internal
+* `create-yoshi-app`, `yoshi`
+  * [#612](https://github.com/wix/yoshi/pull/612) Sentry error reporting ([@netanelgilad](https://github.com/netanelgilad))
+
 ## 3.16.0 (2018-10-17)
 
 #### :rocket: New Feature

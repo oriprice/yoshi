@@ -1,5 +1,6 @@
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
+const globby = require('globby');
 const webpack = require('webpack');
 const { isObject } = require('lodash');
 const nodeExternals = require('webpack-node-externals');
@@ -11,6 +12,8 @@ const StylableWebpackPlugin = require('@stylable/webpack-plugin');
 const TpaStyleWebpackPlugin = require('tpa-style-webpack-plugin');
 const RtlCssPlugin = require('rtlcss-webpack-plugin');
 const xmldoc = require('xmldoc');
+const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
+const WriteFilePlugin = require('write-file-webpack-plugin');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const DynamicPublicPath = require('../src/webpack-plugins/dynamic-public-path');
 const { localIdentName, staticsDomain } = require('../src/constants');
@@ -34,6 +37,8 @@ const {
 const reScript = /\.js?$/;
 const reStyle = /\.(css|less|scss|sass)$/;
 const reAssets = /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|otf|eot|wav|mp3)$/;
+
+const extensions = ['.js', '.jsx', '.ts', '.tsx', '.json'];
 
 const disableTsThreadOptimization =
   process.env.DISABLE_TS_THREAD_OPTIMIZATION === 'true';
@@ -74,6 +79,14 @@ if (inTeamCity && artifactVersion && fs.existsSync(POM_FILE)) {
     '-SNAPSHOT',
     '',
   )}/`;
+}
+
+function exists(entry) {
+  return (
+    globby.sync(`${entry}(${extensions.join('|')})`, {
+      cwd: SRC_DIR,
+    }).length > 0
+  );
 }
 
 // NOTE ABOUT PUBLIC PATH USING UNPKG SERVICE
@@ -263,7 +276,7 @@ function createCommonWebpackConfig({
     resolve: {
       modules: ['node_modules', SRC_DIR],
 
-      extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+      extensions,
 
       alias: project.resolveAlias,
 
@@ -285,18 +298,6 @@ function createCommonWebpackConfig({
       new ModuleNotFoundPlugin(ROOT_DIR),
       // https://github.com/Urthen/case-sensitive-paths-webpack-plugin
       new CaseSensitivePathsPlugin(),
-      // https://github.com/Realytics/fork-ts-checker-webpack-plugin
-      ...(isTypescriptProject && project.experimentalServerBundle
-        ? [
-            // Since `fork-ts-checker-webpack-plugin` requires you to have
-            // TypeScript installed when its required, we only require it if
-            // this is a TypeScript project
-            new (require('fork-ts-checker-webpack-plugin'))({
-              tsconfig: TSCONFIG_FILE,
-              async: false,
-            }),
-          ]
-        : []),
       // Way of communicating to `babel-preset-yoshi` or `babel-preset-wix` that
       // it should optimize for Webpack
       { apply: () => (process.env.IN_WEBPACK = 'true') },
@@ -531,6 +532,36 @@ function createClientWebpackConfig({
     plugins: [
       ...config.plugins,
 
+      // https://github.com/gajus/write-file-webpack-plugin
+      new WriteFilePlugin({
+        exitOnErrors: false,
+        log: false,
+        useHashIndex: false,
+      }),
+
+      // https://github.com/Realytics/fork-ts-checker-webpack-plugin
+      ...(isTypescriptProject && project.experimentalServerBundle && isDebug
+        ? [
+            // Since `fork-ts-checker-webpack-plugin` requires you to have
+            // TypeScript installed when its required, we only require it if
+            // this is a TypeScript project
+            new (require('fork-ts-checker-webpack-plugin'))({
+              tsconfig: TSCONFIG_FILE,
+              // https://github.com/facebook/create-react-app/pull/5607
+              compilerOptions: {
+                module: 'esnext',
+                moduleResolution: 'node',
+                resolveJsonModule: true,
+                noEmit: true,
+              },
+              async: false,
+              silent: true,
+              checkSyntacticErrors: true,
+              formatter: typescriptFormatter,
+            }),
+          ]
+        : []),
+
       // https://webpack.js.org/plugins/loader-options-plugin
       new webpack.LoaderOptionsPlugin({
         minimize: !isDebug,
@@ -619,7 +650,7 @@ function createServerWebpackConfig({ isDebug = true } = {}) {
     target: 'node',
 
     entry: {
-      server: './server',
+      server: ['./server', '../test/dev-server'].find(exists),
     },
 
     output: {
@@ -655,6 +686,24 @@ function createServerWebpackConfig({ isDebug = true } = {}) {
               options: {
                 ...rule.options,
                 emitFile: false,
+              },
+            };
+          }
+
+          if (rule.loader === 'ts-loader') {
+            return {
+              ...rule,
+              options: {
+                ...rule.options,
+
+                compilerOptions: {
+                  ...rule.options.compilerOptions,
+
+                  // allow using Promises, Array.prototype.includes, String.prototype.padStart, etc.
+                  lib: ['es2017'],
+                  // use async/await instead of embedding polyfills
+                  target: 'es2017',
+                },
               },
             };
           }
