@@ -8,7 +8,6 @@ const fs = require('fs-extra');
 const path = require('path');
 const program = require('commander');
 const chalk = require('chalk');
-
 const verifyDirectoryName = require('../src/verifyDirectoryName');
 const { createApp } = require('../src/index');
 const pkg = require('../package.json');
